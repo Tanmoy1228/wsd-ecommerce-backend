@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn">
+    <Properties>
+        <Property name="LOG_PATTERN">[%d{ISO8601}] [%tid] [%t] [%c{1.}:%L] %p - %m%n%throwable</Property>
+        <Property name="LOG_DIR">/logs</Property>
+    </Properties>
+
+    <Appenders>
+        <!-- Console Logging -->
+        <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+
+        <!-- File Logging with Rolling -->
+        <RollingFile name="RollingFile"
+                     fileName="${LOG_DIR}/wsd-ecommerce-backend.log"
+                     filePattern="${LOG_DIR}/wsd-ecommerce-backend-%d{yyyy-MM-dd}-%i.log.gz"
+                     immediateFlush="false">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="30">
+                <Delete basePath="${LOG_DIR}" maxDepth="1">
+                    <IfFileName glob="*/wsd-ecommerce-backend-*.log.gz">
+                        <IfAccumulatedFileCount exceeds="30"/>
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <!-- Json Logging for Logstash -->
+        <RollingFile name="LogstashFile"
+                     fileName="${LOG_DIR}/wsd-ecommerce-backend-logstash-json.log"
+                     filePattern="${LOG_DIR}/wsd-ecommerce-backend-logstash-json-%d{yyyy-MM-dd}-%i.log.gz"
+                     immediateFlush="false">
+            <JsonLayout compact="true" eventEol="true" properties="true" includeStacktrace="true" objectMessageAsJsonObject="true"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="30">
+                <Delete basePath="${LOG_DIR}" maxDepth="1">
+                    <IfFileName glob="*/wsd-ecommerce-backend-logstash-json-*.log.gz">
+                        <IfAccumulatedFileCount exceeds="30"/>
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+        <!-- Application Logs -->
+        <Logger name="com.wsd.ecommerce_app" level="info" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="LogstashFile"/>
+        </Logger>
+
+        <!-- HikariCP Logs -->
+        <Logger name="com.zaxxer.hikari" level="info" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="LogstashFile"/>
+        </Logger>
+
+        <!-- Root Logger -->
+        <Root level="warn">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="LogstashFile"/>
+        </Root>
+    </Loggers>
+</Configuration>
