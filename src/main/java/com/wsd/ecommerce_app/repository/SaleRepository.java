@@ -49,5 +49,5 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     ORDER BY SUM(s.quantity) DESC
     LIMIT 5
     """)
-    List<TopItemLastMonthProjection> findTop5SellingItemsOfLastMonth(LocalDate firstDayOfLastMonth, LocalDate lastDayOfLastMonth);
+    List<TopItemLastMonthProjection> findTop5SellingItemsOfLastMonth(LocalDate startDate, LocalDate endDate);
 }
