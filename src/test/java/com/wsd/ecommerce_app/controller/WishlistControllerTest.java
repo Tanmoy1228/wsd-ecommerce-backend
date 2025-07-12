@@ -1,7 +1,9 @@
 package com.wsd.ecommerce_app.controller;
 
 import com.wsd.ecommerce_app.dto.WishlistItemDto;
+import com.wsd.ecommerce_app.repository.CustomerRepository;
 import com.wsd.ecommerce_app.service.WishlistService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,15 +27,26 @@ class WishlistControllerTest {
     @MockBean
     private WishlistService wishlistService;
 
+    @MockBean
+    private CustomerRepository customerRepository;
+
+    private WishlistItemDto sampleWishlistItem;
+
+    @BeforeEach
+    void setUp() {
+        sampleWishlistItem = new WishlistItemDto(100L, "Sample wishlist item", LocalDateTime.now());
+    }
+
     @Test
     void shouldReturnWishlistItemsForCustomer() throws Exception {
 
-        WishlistItemDto wishlistItemDto = new WishlistItemDto(100L, "Sample wishlist item", LocalDateTime.now());
+        Long customerId = 1L;
 
-        when(wishlistService.getWishlistForCustomer(1L))
-                .thenReturn(List.of(wishlistItemDto));
+        when(customerRepository.existsById(customerId)).thenReturn(true);
+        when(wishlistService.getWishlistForCustomer(customerId))
+                .thenReturn(List.of(sampleWishlistItem));
 
-        mockMvc.perform(get("/api/wishlist/1"))
+        mockMvc.perform(get("/api/wishlist/{customerId}", customerId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
@@ -47,6 +60,8 @@ class WishlistControllerTest {
     void shouldReturn404WhenCustomerNotFound() throws Exception {
 
         Long customerId = 999L;
+
+        when(customerRepository.existsById(customerId)).thenReturn(false);
 
         mockMvc.perform(get("/api/wishlist/{customerId}", customerId))
                 .andExpect(status().isNotFound())

@@ -2,6 +2,7 @@ package com.wsd.ecommerce_app.controller;
 
 import com.wsd.ecommerce_app.dto.WishlistItemDto;
 import com.wsd.ecommerce_app.exception.CustomerNotFoundException;
+import com.wsd.ecommerce_app.repository.CustomerRepository;
 import com.wsd.ecommerce_app.service.WishlistService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,14 +18,17 @@ public class WishlistController {
 
     private final WishlistService wishlistService;
 
-    public WishlistController(WishlistService wishlistService) {
+    private final CustomerRepository customerRepository;
+
+    public WishlistController(WishlistService wishlistService, CustomerRepository customerRepository) {
         this.wishlistService = wishlistService;
+        this.customerRepository = customerRepository;
     }
 
     @GetMapping("/{customerId}")
     public ResponseEntity<List<WishlistItemDto>> getWishlist(@PathVariable Long customerId) {
 
-        if (customerId.equals(999L)) {
+        if (!customerRepository.existsById(customerId)) {
             throw new CustomerNotFoundException("Customer with ID " + customerId + " not found");
         }
 
