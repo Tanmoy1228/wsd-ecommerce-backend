@@ -73,4 +73,35 @@ class SaleRepositoryTest {
         List<TopSellingItemProjection> result = saleRepository.findTop5SellingItems();
         assertThat(result).isEmpty();
     }
+
+    @Test
+    void shouldFindTopSellingItemsOfLastMonth() {
+
+        LocalDate today = LocalDate.now();
+        LocalDate firstDayOfLastMonth = today.minusMonths(1).withDayOfMonth(1);
+        LocalDate lastDayOfLastMonth = firstDayOfLastMonth.withDayOfMonth(firstDayOfLastMonth.lengthOfMonth());
+
+        List<TopItemLastMonthProjection> result = saleRepository.findTop5SellingItemsOfLastMonth(
+                firstDayOfLastMonth, lastDayOfLastMonth);
+
+        assertThat(result).isNotNull();
+
+        assertThat(result).hasSizeLessThanOrEqualTo(5);
+    }
+
+    @Test
+    @Transactional
+    void shouldReturnEmptyListWhenNoSalesInLastMonth() {
+
+        saleRepository.deleteAll();
+
+        LocalDate today = LocalDate.now();
+        LocalDate firstDayOfLastMonth = today.minusMonths(1).withDayOfMonth(1);
+        LocalDate lastDayOfLastMonth = firstDayOfLastMonth.withDayOfMonth(firstDayOfLastMonth.lengthOfMonth());
+
+        List<TopItemLastMonthProjection> result = saleRepository.findTop5SellingItemsOfLastMonth(
+                firstDayOfLastMonth, lastDayOfLastMonth);
+
+        assertThat(result).isNotNull();
+    }
 }
