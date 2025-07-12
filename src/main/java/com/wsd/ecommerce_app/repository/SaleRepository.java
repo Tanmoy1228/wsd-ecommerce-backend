@@ -37,4 +37,6 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     LIMIT 5
     """)
     List<TopSellingItemProjection> findTop5SellingItems();
+
+    List<TopItemLastMonthProjection> findTop5SellingItemsOfLastMonth(LocalDate firstDayOfLastMonth, LocalDate lastDayOfLastMonth);
 }
