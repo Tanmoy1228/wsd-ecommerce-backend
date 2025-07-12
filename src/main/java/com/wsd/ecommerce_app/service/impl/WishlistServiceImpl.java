@@ -1,6 +1,7 @@
 package com.wsd.ecommerce_app.service.impl;
 
 import com.wsd.ecommerce_app.dto.WishlistItemDto;
+import com.wsd.ecommerce_app.model.Wishlist;
 import com.wsd.ecommerce_app.service.WishlistService;
 import com.wsd.ecommerce_app.repository.WishlistRepository;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,14 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     public List<WishlistItemDto> getWishlistForCustomer(Long customerId) {
-        return wishlistRepository.getWishlistForCustomer(customerId);
+
+        List<Wishlist> wishlists = wishlistRepository.findByCustomer_Id(customerId);
+
+        return wishlists.stream()
+            .map(wishlist -> new WishlistItemDto(
+                wishlist.getProduct().getId(),
+                wishlist.getProduct().getName(),
+                wishlist.getAddedDate()))
+            .toList();
     }
 }

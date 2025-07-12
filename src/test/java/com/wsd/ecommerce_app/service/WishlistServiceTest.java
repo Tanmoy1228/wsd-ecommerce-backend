@@ -1,6 +1,9 @@
 package com.wsd.ecommerce_app.service;
 
 import com.wsd.ecommerce_app.dto.WishlistItemDto;
+import com.wsd.ecommerce_app.model.Customer;
+import com.wsd.ecommerce_app.model.Product;
+import com.wsd.ecommerce_app.model.Wishlist;
 import com.wsd.ecommerce_app.repository.WishlistRepository;
 import com.wsd.ecommerce_app.service.impl.WishlistServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,11 +28,19 @@ class WishlistServiceTest {
     @Mock
     private WishlistRepository wishlistRepository;
 
-    private WishlistItemDto sampleWishlistItem;
+    private Wishlist sampleWishlist;
 
     @BeforeEach
     void setUp() {
-        sampleWishlistItem = new WishlistItemDto(100L, "Sample wishlist item", LocalDateTime.now());
+
+        Customer customer = new Customer("Test Customer", "test@example.com");
+
+        Product product = new Product("Sample wishlist item", new BigDecimal("99.99"), 10);
+
+        customer.setId(1L);
+        product.setId(100L);
+
+        sampleWishlist = new Wishlist(customer, product);
     }
 
     @Test
@@ -37,8 +48,8 @@ class WishlistServiceTest {
 
         Long customerId = 1L;
 
-        when(wishlistRepository.getWishlistForCustomer(customerId))
-                .thenReturn(List.of(sampleWishlistItem));
+        when(wishlistRepository.findByCustomer_Id(customerId))
+                .thenReturn(List.of(sampleWishlist));
 
         List<WishlistItemDto> result = wishlistService.getWishlistForCustomer(customerId);
 
@@ -53,7 +64,7 @@ class WishlistServiceTest {
 
         Long customerId = 999L;
 
-        when(wishlistRepository.getWishlistForCustomer(customerId))
+        when(wishlistRepository.findByCustomer_Id(customerId))
                 .thenReturn(List.of());
 
         List<WishlistItemDto> result = wishlistService.getWishlistForCustomer(customerId);

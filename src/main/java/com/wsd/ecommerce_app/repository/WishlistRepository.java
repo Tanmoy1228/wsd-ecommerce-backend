@@ -1,22 +1,13 @@
 package com.wsd.ecommerce_app.repository;
 
-import com.wsd.ecommerce_app.dto.WishlistItemDto;
+import com.wsd.ecommerce_app.model.Wishlist;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public class WishlistRepository {
+public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
 
-    public List<WishlistItemDto> getWishlistForCustomer(Long customerId) {
-
-        if (customerId.equals(999L)) {
-            return List.of();
-        }
-
-        return List.of(
-                new WishlistItemDto(100L, "Sample wishlist item", LocalDateTime.now())
-        );
-    }
+    List<Wishlist> findByCustomer_Id(Long customerId);
 }

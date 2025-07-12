@@ -1,5 +1,6 @@
 package com.wsd.ecommerce_app.repository;
 
+import com.wsd.ecommerce_app.model.Wishlist;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -21,7 +22,7 @@ class WishlistRepositoryTest {
 
         Long customerId = 1L;
 
-        List<Wishlist> result = wishlistRepository.getWishlistForCustomer(customerId);
+        List<Wishlist> result = wishlistRepository.findByCustomer_Id(customerId);
 
         assertThat(result).isNotNull();
         assertThat(result).size().isGreaterThan(0);
@@ -32,7 +33,7 @@ class WishlistRepositoryTest {
 
         Long customerId = 19L;
 
-        List<Wishlist> result = wishlistRepository.getWishlistForCustomer(customerId);
+        List<Wishlist> result = wishlistRepository.findByCustomer_Id(customerId);
 
         assertThat(result).isNotNull();
         assertThat(result).isEmpty();
