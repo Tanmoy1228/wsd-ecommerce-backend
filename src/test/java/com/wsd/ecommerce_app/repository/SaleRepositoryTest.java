@@ -22,10 +22,8 @@ class SaleRepositoryTest {
     void shouldSumAmountBySaleDate() {
 
         LocalDate today = LocalDate.now();
-        LocalDateTime startOfDay = today.atStartOfDay();
-        LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);
 
-        BigDecimal totalAmount = saleRepository.findTotalSaleAmountForDateRange(startOfDay, endOfDay);
+        BigDecimal totalAmount = saleRepository.findTotalSaleAmountForDate(today);
 
         assertThat(totalAmount).isNotNull();
         assertThat(totalAmount).isGreaterThanOrEqualTo(BigDecimal.ZERO);

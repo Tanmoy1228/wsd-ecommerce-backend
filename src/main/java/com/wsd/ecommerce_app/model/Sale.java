@@ -3,6 +3,7 @@ package com.wsd.ecommerce_app.model;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -28,16 +29,20 @@ public class Sale {
     private BigDecimal amount;
 
     @Column(name = "sale_date", nullable = false)
-    private LocalDateTime saleDate;
+    private LocalDate saleDate;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
     public Sale() {}
 
-    public Sale(Customer customer, Product product, Integer quantity, BigDecimal amount, LocalDateTime saleDate) {
+    public Sale(Customer customer, Product product, Integer quantity, BigDecimal amount, LocalDate saleDate, LocalDateTime createdAt) {
         this.customer = customer;
         this.product = product;
         this.quantity = quantity;
         this.amount = amount;
         this.saleDate = saleDate;
+        this.createdAt = createdAt;
     }
 
     public Long getId() {
@@ -80,11 +85,19 @@ public class Sale {
         this.amount = amount;
     }
 
-    public LocalDateTime getSaleDate() {
+    public LocalDate getSaleDate() {
         return saleDate;
     }
 
-    public void setSaleDate(LocalDateTime saleDate) {
+    public void setSaleDate(LocalDate saleDate) {
         this.saleDate = saleDate;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

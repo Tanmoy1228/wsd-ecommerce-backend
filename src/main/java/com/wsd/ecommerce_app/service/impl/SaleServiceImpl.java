@@ -27,10 +27,8 @@ public class SaleServiceImpl implements SaleService {
     public SaleTotalTodayDTO getTodaySaleTotal() {
 
         LocalDate today = LocalDate.now();
-        LocalDateTime startOfDay = today.atStartOfDay();
-        LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);
 
-        BigDecimal total = saleRepository.findTotalSaleAmountForDateRange(startOfDay, endOfDay);
+        BigDecimal total = saleRepository.findTotalSaleAmountForDate(today);
 
         logger.info("Calculated today's total sales: {}", total);
 

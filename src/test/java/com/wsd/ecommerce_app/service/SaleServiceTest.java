@@ -31,12 +31,10 @@ class SaleServiceTest {
     void shouldReturnTodayTotalSales() {
 
         LocalDate today = LocalDate.now();
-        LocalDateTime startOfDay = today.atStartOfDay();
-        LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);
 
         BigDecimal totalAmount = new BigDecimal("999.99");
 
-        when(saleRepository.findTotalSaleAmountForDateRange(startOfDay, endOfDay))
+        when(saleRepository.findTotalSaleAmountForDate(today))
                 .thenReturn(totalAmount);
 
         SaleTotalTodayDTO dto = saleService.getTodaySaleTotal();

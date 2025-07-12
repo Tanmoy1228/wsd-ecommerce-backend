@@ -6,11 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Repository
 public interface SaleRepository extends JpaRepository<Sale, Long> {
 
-    @Query("SELECT COALESCE(SUM(s.amount), 0) FROM Sale s WHERE s.saleDate >= :startOfDay AND s.saleDate <= :endOfDay")
-    BigDecimal findTotalSaleAmountForDateRange(LocalDateTime startOfDay, LocalDateTime endOfDay);
+    @Query("SELECT COALESCE(SUM(s.amount), 0) FROM Sale s WHERE s.saleDate = :today")
+    BigDecimal findTotalSaleAmountForDate(LocalDate today);
 }
