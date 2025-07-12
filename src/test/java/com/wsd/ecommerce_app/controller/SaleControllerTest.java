@@ -41,4 +41,22 @@ public class SaleControllerTest {
                 .andExpect(jsonPath("$.date").value(today.toString()))
                 .andExpect(jsonPath("$.totalSaleAmount").value(totalSaleAmount));
     }
+
+    @Test
+    void shouldReturnMaxSaleDayForGivenRange() throws Exception {
+
+        LocalDate startDate = LocalDate.of(2024, 7, 1);
+        LocalDate endDate = LocalDate.of(2024, 7, 10);
+
+        BigDecimal totalSaleAmount = new BigDecimal("999.99");
+        LocalDate date = LocalDate.of(2024, 7, 5);
+
+        mockMvc.perform(get("/api/sales/max-day")
+                        .param("startDate", startDate.toString())
+                        .param("endDate", endDate.toString())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.date").value(date.toString()))
+                .andExpect(jsonPath("$.totalSaleAmount").value(totalSaleAmount));
+    }
 }
