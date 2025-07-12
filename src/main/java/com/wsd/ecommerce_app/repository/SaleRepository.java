@@ -13,4 +13,15 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
 
     @Query("SELECT COALESCE(SUM(s.amount), 0) FROM Sale s WHERE s.saleDate = :today")
     BigDecimal findTotalSaleAmountForDate(LocalDate today);
+
+    @Query("""
+    SELECT
+      s.saleDate AS date,
+      SUM(s.amount) as totalSaleAmount
+    FROM Sale s
+    WHERE s.saleDate >= :startDate AND s.saleDate <= :endDate
+    GROUP BY s.saleDate
+    ORDER BY SUM(s.amount) DESC, s.saleDate DESC limit 1
+   """)
+    MaxSaleDayProjection findMaxSaleDay(LocalDate startDate, LocalDate endDate);
 }
