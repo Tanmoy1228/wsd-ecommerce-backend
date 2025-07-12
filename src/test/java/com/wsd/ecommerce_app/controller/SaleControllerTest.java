@@ -65,4 +65,36 @@ public class SaleControllerTest {
                 .andExpect(jsonPath("$.date").value(dto.getDate().toString()))
                 .andExpect(jsonPath("$.totalSaleAmount").value(dto.getTotalSaleAmount()));
     }
+
+    @Test
+    void shouldReturnBadRequestWhenEndDateIsBeforeStartDate() throws Exception {
+        mockMvc.perform(get("/api/sales/max-day")
+                        .param("startDate", "2024-07-10")
+                        .param("endDate", "2024-07-01"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturnBadRequestForInvalidDateFormat() throws Exception {
+        mockMvc.perform(get("/api/sales/max-day")
+                        .param("startDate", "07-01-2024")
+                        .param("endDate", "2024-07-10"))
+                .andExpect(status().isBadRequest());
+    }
+
+
+    @Test
+    void shouldReturnBadRequestWhenStartDateIsMissing() throws Exception {
+        mockMvc.perform(get("/api/sales/max-day")
+                        .param("endDate", "2024-07-10"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenEndDateIsMissing() throws Exception {
+        mockMvc.perform(get("/api/sales/max-day")
+                        .param("startDate", "2024-07-01"))
+                .andExpect(status().isBadRequest());
+    }
+
 }
