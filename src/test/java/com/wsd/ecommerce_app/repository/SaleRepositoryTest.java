@@ -1,5 +1,6 @@
 package com.wsd.ecommerce_app.repository;
 
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -7,6 +8,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -50,5 +52,25 @@ class SaleRepositoryTest {
         MaxSaleDayProjection result = saleRepository.findMaxSaleDay(startDate, endDate);
 
         assertThat(result).isNull();
+    }
+
+    @Test
+    void shouldFindTopSellingItems() {
+
+        List<TopSellingItemProjection> result = saleRepository.findTop5SellingItems();
+
+        assertThat(result).isNotNull();
+
+        assertThat(result).hasSizeLessThanOrEqualTo(5);
+    }
+
+    @Test
+    @Transactional
+    void shouldReturnEmptyListWhenNoSales() {
+
+        saleRepository.deleteAll();
+
+        List<TopSellingItemProjection> result = saleRepository.findTop5SellingItems();
+        assertThat(result).isEmpty();
     }
 }
