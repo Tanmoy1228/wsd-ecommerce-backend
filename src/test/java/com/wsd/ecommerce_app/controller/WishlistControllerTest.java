@@ -41,5 +41,19 @@ class WishlistControllerTest {
                 .andExpect(jsonPath("$[0].productName").value("Sample wishlist item"))
                 .andExpect(jsonPath("$[0].addedDate").exists());
     }
+
+
+    @Test
+    void shouldReturn404WhenCustomerNotFound() throws Exception {
+
+        Long customerId = 999L;
+
+        mockMvc.perform(get("/api/wishlist/{customerId}", customerId))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Customer with ID 999 not found"))
+                .andExpect(jsonPath("$.timestamp").exists());
+    }
+
+
 }
 
