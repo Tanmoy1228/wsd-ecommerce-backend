@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface SaleRepository extends JpaRepository<Sale, Long> {
@@ -24,4 +25,6 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     ORDER BY SUM(s.amount) DESC, s.saleDate DESC limit 1
    """)
     MaxSaleDayProjection findMaxSaleDay(LocalDate startDate, LocalDate endDate);
+
+    List<TopSellingItemProjection> findTop5SellingItems();
 }
