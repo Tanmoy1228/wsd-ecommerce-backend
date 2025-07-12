@@ -8,4 +8,10 @@
     <include file="db/changelog/001-create-customers-table.xml"/>
     <include file="db/changelog/insert-customers-sample-data.sql" context="test"/>
 
+    <include file="db/changelog/002-create-products-table.xml"/>
+    <include file="db/changelog/insert-products-sample-data.sql" context="test"/>
+
+    <include file="db/changelog/003-create-wishlist-items-table.xml"/>
+    <include file="db/changelog/insert-wishlists-sample-data.sql" context="test"/>
+
 </databaseChangeLog>
