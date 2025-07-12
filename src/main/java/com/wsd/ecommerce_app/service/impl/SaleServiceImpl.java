@@ -5,6 +5,7 @@ import com.wsd.ecommerce_app.dto.SaleTotalTodayDTO;
 import com.wsd.ecommerce_app.dto.TopSellingItemDTO;
 import com.wsd.ecommerce_app.repository.MaxSaleDayProjection;
 import com.wsd.ecommerce_app.repository.SaleRepository;
+import com.wsd.ecommerce_app.repository.TopSellingItemProjection;
 import com.wsd.ecommerce_app.service.SaleService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,12 +55,15 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public List<TopSellingItemDTO> getTop5SellingItems() {
 
-        return List.of(
-                new TopSellingItemDTO(1L, "Laptop", new BigDecimal("9999.99")),
-                new TopSellingItemDTO(2L, "Phone", new BigDecimal("8888.88")),
-                new TopSellingItemDTO(3L, "Tablet", new BigDecimal("7777.77")),
-                new TopSellingItemDTO(4L, "Monitor", new BigDecimal("6666.66")),
-                new TopSellingItemDTO(5L, "Mouse", new BigDecimal("5555.55"))
-        );
+        List<TopSellingItemProjection> topSellingItemProjection = saleRepository.findTop5SellingItems();
+
+        return topSellingItemProjection.stream()
+                .map(projection ->
+                        new TopSellingItemDTO(
+                                projection.getProductId(),
+                                projection.getProductName(),
+                                projection.getTotalSaleAmount()
+                        )
+                ).toList();
     }
 }
