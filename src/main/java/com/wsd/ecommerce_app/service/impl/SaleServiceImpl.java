@@ -1,6 +1,8 @@
 package com.wsd.ecommerce_app.service.impl;
 
+import com.wsd.ecommerce_app.dto.MaxSaleDayDTO;
 import com.wsd.ecommerce_app.dto.SaleTotalTodayDTO;
+import com.wsd.ecommerce_app.repository.MaxSaleDayProjection;
 import com.wsd.ecommerce_app.repository.SaleRepository;
 import com.wsd.ecommerce_app.service.SaleService;
 import org.apache.logging.log4j.LogManager;
@@ -9,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Service
 public class SaleServiceImpl implements SaleService {
@@ -26,15 +27,25 @@ public class SaleServiceImpl implements SaleService {
     public SaleTotalTodayDTO getTodaySaleTotal() {
 
         LocalDate today = LocalDate.now();
-        LocalDateTime startOfDay = today.atStartOfDay();
-        LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);
 
-        BigDecimal total = saleRepository.findTotalSaleAmountForDateRange(startOfDay, endOfDay);
+        BigDecimal total = saleRepository.findTotalSaleAmountForDate(today);
 
         logger.info("Calculated today's total sales: {}", total);
 
         total = total != null ? total : BigDecimal.ZERO;
 
         return new SaleTotalTodayDTO(today, total);
+    }
+
+    @Override
+    public MaxSaleDayDTO getMaxSaleDay(LocalDate startDate, LocalDate endDate) {
+
+        MaxSaleDayProjection maxSaleDayProjection = saleRepository.findMaxSaleDay(startDate, endDate);
+
+        if (maxSaleDayProjection == null) {
+            return null;
+        }
+
+        return new MaxSaleDayDTO(maxSaleDayProjection.getDate(), maxSaleDayProjection.getTotalSaleAmount());
     }
 }

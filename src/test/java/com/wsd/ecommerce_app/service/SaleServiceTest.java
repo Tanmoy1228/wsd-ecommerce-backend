@@ -1,6 +1,8 @@
 package com.wsd.ecommerce_app.service;
 
+import com.wsd.ecommerce_app.dto.MaxSaleDayDTO;
 import com.wsd.ecommerce_app.dto.SaleTotalTodayDTO;
+import com.wsd.ecommerce_app.repository.MaxSaleDayProjection;
 import com.wsd.ecommerce_app.repository.SaleRepository;
 import com.wsd.ecommerce_app.service.impl.SaleServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -10,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -30,17 +31,58 @@ class SaleServiceTest {
     void shouldReturnTodayTotalSales() {
 
         LocalDate today = LocalDate.now();
-        LocalDateTime startOfDay = today.atStartOfDay();
-        LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);
 
         BigDecimal totalAmount = new BigDecimal("999.99");
 
-        when(saleRepository.findTotalSaleAmountForDateRange(startOfDay, endOfDay))
+        when(saleRepository.findTotalSaleAmountForDate(today))
                 .thenReturn(totalAmount);
 
         SaleTotalTodayDTO dto = saleService.getTodaySaleTotal();
 
         assertThat(dto.getDate()).isEqualTo(today);
         assertThat(dto.getTotalSaleAmount()).isEqualTo(totalAmount);
+    }
+
+    @Test
+    void shouldReturnMaxSaleDayWithinRange() {
+
+        LocalDate startDate = LocalDate.of(2025, 6, 1);
+        LocalDate endDate = LocalDate.of(2025, 7, 3);
+
+        BigDecimal totalSaleAmount = new BigDecimal("300.00");
+        LocalDate maxSaleDate = LocalDate.of(2025, 6, 5);
+
+        when(saleRepository.findMaxSaleDay(startDate, endDate)).thenReturn(
+                new MaxSaleDayProjection() {
+                    @Override
+                    public LocalDate getDate() {
+                        return maxSaleDate;
+                    }
+
+                    @Override
+                    public BigDecimal getTotalSaleAmount() {
+                        return totalSaleAmount;
+                    }
+                }
+        );
+
+        MaxSaleDayDTO result = saleService.getMaxSaleDay(startDate, endDate);
+
+        assertThat(result.getDate()).isEqualTo(maxSaleDate);
+        assertThat(result.getTotalSaleAmount()).isEqualByComparingTo(totalSaleAmount);
+    }
+
+    @Test
+    void shouldReturnNullIfNoSalesInRange() {
+
+        LocalDate startDate = LocalDate.of(2024, 8, 1);
+        LocalDate endDate = LocalDate.of(2024, 8, 2);
+
+        when(saleRepository.findMaxSaleDay(startDate, endDate))
+                .thenReturn(null);
+
+        MaxSaleDayDTO result = saleService.getMaxSaleDay(startDate, endDate);
+
+        assertThat(result).isNull();
     }
 }
