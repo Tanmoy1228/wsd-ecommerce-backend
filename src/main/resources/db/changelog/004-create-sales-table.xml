@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet id="007-create-sales-table" author="developer">
+        <createTable tableName="sales">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="customer_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sale_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Add foreign key constraints -->
+        <addForeignKeyConstraint
+                baseTableName="sales"
+                baseColumnNames="customer_id"
+                referencedTableName="customers"
+                referencedColumnNames="id"
+                constraintName="fk_sales_customer"/>
+
+        <addForeignKeyConstraint
+                baseTableName="sales"
+                baseColumnNames="product_id"
+                referencedTableName="products"
+                referencedColumnNames="id"
+                constraintName="fk_sales_product"/>
+
+        <!-- Index sale_date to optimize performance -->
+        <createIndex tableName="sales" indexName="idx_sales_date">
+            <column name="sale_date"/>
+        </createIndex>
+
+    </changeSet>
+
+</databaseChangeLog>

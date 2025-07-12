@@ -14,4 +14,7 @@
     <include file="db/changelog/003-create-wishlist-items-table.xml"/>
     <include file="db/changelog/insert-wishlists-sample-data.sql" context="test"/>
 
+    <include file="db/changelog/004-create-sales-table.xml"/>
+    <include file="db/changelog/insert-sales-sample-data.sql" context="test"/>
+
 </databaseChangeLog>
