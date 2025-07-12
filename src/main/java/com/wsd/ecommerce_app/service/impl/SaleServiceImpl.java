@@ -12,6 +12,6 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public SaleTotalTodayDTO getTodaySaleTotal() {
-        return new SaleTotalTodayDTO(LocalDate.now(), new BigDecimal("1500.75"));
+        return new SaleTotalTodayDTO(LocalDate.now(), new BigDecimal("999.99"));
     }
 }
