@@ -2,6 +2,7 @@ package com.wsd.ecommerce_app.controller;
 
 import com.wsd.ecommerce_app.dto.MaxSaleDayDTO;
 import com.wsd.ecommerce_app.dto.SaleTotalTodayDTO;
+import com.wsd.ecommerce_app.dto.TopItemLastMonthDTO;
 import com.wsd.ecommerce_app.dto.TopSellingItemDTO;
 import com.wsd.ecommerce_app.service.SaleService;
 import org.junit.jupiter.api.Test;
@@ -120,6 +121,16 @@ public class SaleControllerTest {
 
     @Test
     void shouldReturnTop5ItemsOfLastMonthByNumberOfSales() throws Exception {
+
+        List<TopItemLastMonthDTO> topItemLastMonthDTOList = List.of(
+                new TopItemLastMonthDTO(1L, "Laptop", 10),
+                new TopItemLastMonthDTO(2L, "Phone", 20),
+                new TopItemLastMonthDTO(3L, "Tablet", 30),
+                new TopItemLastMonthDTO(4L, "Monitor", 40),
+                new TopItemLastMonthDTO(5L, "Mouse", 50)
+        );
+
+        Mockito.when(saleService.getTop5ItemsOfLastMonth()).thenReturn(topItemLastMonthDTOList);
 
         mockMvc.perform(get("/api/sales/last-month-top-selling-items")
                         .contentType(MediaType.APPLICATION_JSON))

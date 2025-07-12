@@ -2,6 +2,7 @@ package com.wsd.ecommerce_app.service.impl;
 
 import com.wsd.ecommerce_app.dto.MaxSaleDayDTO;
 import com.wsd.ecommerce_app.dto.SaleTotalTodayDTO;
+import com.wsd.ecommerce_app.dto.TopItemLastMonthDTO;
 import com.wsd.ecommerce_app.dto.TopSellingItemDTO;
 import com.wsd.ecommerce_app.repository.MaxSaleDayProjection;
 import com.wsd.ecommerce_app.repository.SaleRepository;
@@ -65,5 +66,17 @@ public class SaleServiceImpl implements SaleService {
                                 projection.getTotalSaleAmount()
                         )
                 ).toList();
+    }
+
+    @Override
+    public List<TopItemLastMonthDTO> getTop5ItemsOfLastMonth() {
+
+        return List.of(
+                new TopItemLastMonthDTO(1L, "Laptop", 10),
+                new TopItemLastMonthDTO(2L, "Phone", 20),
+                new TopItemLastMonthDTO(3L, "Tablet", 30),
+                new TopItemLastMonthDTO(4L, "Monitor", 40),
+                new TopItemLastMonthDTO(5L, "Mouse", 50)
+        );
     }
 }

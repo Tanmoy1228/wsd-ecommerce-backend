@@ -58,13 +58,7 @@ public class SaleController {
     @GetMapping("/last-month-top-selling-items")
     public ResponseEntity<List<TopItemLastMonthDTO>> getTopItemsOfLastMonth() {
 
-        List<TopItemLastMonthDTO> lastMonthTopSellingItems = List.of(
-                new TopItemLastMonthDTO(1L, "Laptop", 10),
-                new TopItemLastMonthDTO(2L, "Phone", 20),
-                new TopItemLastMonthDTO(3L, "Tablet", 30),
-                new TopItemLastMonthDTO(4L, "Monitor", 40),
-                new TopItemLastMonthDTO(5L, "Mouse", 50)
-        );;
+        List<TopItemLastMonthDTO> lastMonthTopSellingItems = saleService.getTop5ItemsOfLastMonth();
 
         return ResponseEntity.ok(lastMonthTopSellingItems);
     }

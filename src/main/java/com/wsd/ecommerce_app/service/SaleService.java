@@ -2,6 +2,7 @@ package com.wsd.ecommerce_app.service;
 
 import com.wsd.ecommerce_app.dto.MaxSaleDayDTO;
 import com.wsd.ecommerce_app.dto.SaleTotalTodayDTO;
+import com.wsd.ecommerce_app.dto.TopItemLastMonthDTO;
 import com.wsd.ecommerce_app.dto.TopSellingItemDTO;
 
 import java.time.LocalDate;
@@ -14,4 +15,6 @@ public interface SaleService {
     MaxSaleDayDTO getMaxSaleDay(LocalDate startDate, LocalDate endDate);
 
     List<TopSellingItemDTO> getTop5SellingItems();
+
+    List<TopItemLastMonthDTO> getTop5ItemsOfLastMonth();
 }
