@@ -2,8 +2,10 @@ package com.wsd.ecommerce_app.service;
 
 import com.wsd.ecommerce_app.dto.MaxSaleDayDTO;
 import com.wsd.ecommerce_app.dto.SaleTotalTodayDTO;
+import com.wsd.ecommerce_app.dto.TopSellingItemDTO;
 import com.wsd.ecommerce_app.repository.MaxSaleDayProjection;
 import com.wsd.ecommerce_app.repository.SaleRepository;
+import com.wsd.ecommerce_app.repository.TopSellingItemProjection;
 import com.wsd.ecommerce_app.service.impl.SaleServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -12,6 +14,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -85,4 +90,64 @@ class SaleServiceTest {
 
         assertThat(result).isNull();
     }
+
+    @Test
+    void shouldReturnTop5SellingItems() {
+
+        List<TopSellingItemProjection> topSellingItems = List.of(
+                createProjection(1L, "Laptop", new BigDecimal("9999.99")),
+                createProjection(2L, "Phone", new BigDecimal("8888.88")),
+                createProjection(3L, "Tablet", new BigDecimal("7777.77")),
+                createProjection(4L, "Monitor", new BigDecimal("6666.66")),
+                createProjection(5L, "Mouse", new BigDecimal("5555.55"))
+        );
+
+        when(saleRepository.findTop5SellingItems()).thenReturn(topSellingItems);
+
+        List<TopSellingItemDTO> result = saleService.getTop5SellingItems();
+
+        assertThat(result).hasSize(5);
+        assertThat(result.get(0).getProductName()).isEqualTo("Laptop");
+        assertThat(result.get(1).getProductName()).isEqualTo("Phone");
+    }
+
+    @Test
+    void shouldReturnLessThan5ItemsWhenNotEnoughProducts() {
+
+        List<TopSellingItemProjection> topSellingItems = Arrays.asList(
+                createProjection(1L, "Laptop", new BigDecimal("5000.00")),
+                createProjection(2L, "Phone", new BigDecimal("3000.00"))
+        );
+
+        when(saleRepository.findTop5SellingItems()).thenReturn(topSellingItems);
+
+        List<TopSellingItemDTO> result = saleService.getTop5SellingItems();
+
+        assertThat(result).hasSize(2);
+    }
+
+    @Test
+    void shouldReturnEmptyListWhenNoSales() {
+
+        when(saleRepository.findTop5SellingItems()).thenReturn(Collections.emptyList());
+
+        List<TopSellingItemDTO> result = saleService.getTop5SellingItems();
+
+        assertThat(result).isEmpty();
+    }
+
+    private TopSellingItemProjection createProjection(Long productId, String productName, BigDecimal totalSaleAmount) {
+
+        return new TopSellingItemProjection() {
+            @Override
+            public Long getProductId() { return productId; }
+
+            @Override
+            public String getProductName() { return productName; }
+
+            @Override
+            public BigDecimal getTotalSaleAmount() { return totalSaleAmount; }
+        };
+    }
+
 }

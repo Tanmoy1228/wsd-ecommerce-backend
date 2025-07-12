@@ -2,6 +2,7 @@ package com.wsd.ecommerce_app.controller;
 
 import com.wsd.ecommerce_app.dto.MaxSaleDayDTO;
 import com.wsd.ecommerce_app.dto.SaleTotalTodayDTO;
+import com.wsd.ecommerce_app.dto.TopSellingItemDTO;
 import com.wsd.ecommerce_app.service.SaleService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -13,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -95,6 +97,25 @@ public class SaleControllerTest {
         mockMvc.perform(get("/api/sales/max-day")
                         .param("startDate", "2024-07-01"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturnTop5SellingItemsOfAllTime() throws Exception {
+
+        List<TopSellingItemDTO> topSellingItems = List.of(
+                new TopSellingItemDTO(1L, "Laptop", new BigDecimal("9999.99")),
+                new TopSellingItemDTO(2L, "Phone", new BigDecimal("8888.88")),
+                new TopSellingItemDTO(3L, "Tablet", new BigDecimal("7777.77")),
+                new TopSellingItemDTO(4L, "Monitor", new BigDecimal("6666.66")),
+                new TopSellingItemDTO(5L, "Mouse", new BigDecimal("5555.55"))
+        );
+
+        Mockito.when(saleService.getTop5SellingItems()).thenReturn(topSellingItems);
+
+        mockMvc.perform(get("/api/sales/top-five-selling-items")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray());
     }
 
 }
