@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -50,13 +49,7 @@ public class SaleController {
     @GetMapping("/top-five-selling-items")
     public ResponseEntity<List<TopSellingItemDTO>> getTop5SellingItems() {
 
-        List<TopSellingItemDTO> topSellingItems = List.of(
-                new TopSellingItemDTO(1L, "Laptop", new BigDecimal("9999.99")),
-                new TopSellingItemDTO(2L, "Phone", new BigDecimal("8888.88")),
-                new TopSellingItemDTO(3L, "Tablet", new BigDecimal("7777.77")),
-                new TopSellingItemDTO(4L, "Monitor", new BigDecimal("6666.66")),
-                new TopSellingItemDTO(5L, "Mouse", new BigDecimal("5555.55"))
-        );;
+        List<TopSellingItemDTO> topSellingItems = saleService.getTop5SellingItems();
 
         return ResponseEntity.ok(topSellingItems);
     }

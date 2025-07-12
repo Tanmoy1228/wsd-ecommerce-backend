@@ -2,6 +2,7 @@ package com.wsd.ecommerce_app.service.impl;
 
 import com.wsd.ecommerce_app.dto.MaxSaleDayDTO;
 import com.wsd.ecommerce_app.dto.SaleTotalTodayDTO;
+import com.wsd.ecommerce_app.dto.TopSellingItemDTO;
 import com.wsd.ecommerce_app.repository.MaxSaleDayProjection;
 import com.wsd.ecommerce_app.repository.SaleRepository;
 import com.wsd.ecommerce_app.service.SaleService;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class SaleServiceImpl implements SaleService {
@@ -47,5 +49,17 @@ public class SaleServiceImpl implements SaleService {
         }
 
         return new MaxSaleDayDTO(maxSaleDayProjection.getDate(), maxSaleDayProjection.getTotalSaleAmount());
+    }
+
+    @Override
+    public List<TopSellingItemDTO> getTop5SellingItems() {
+
+        return List.of(
+                new TopSellingItemDTO(1L, "Laptop", new BigDecimal("9999.99")),
+                new TopSellingItemDTO(2L, "Phone", new BigDecimal("8888.88")),
+                new TopSellingItemDTO(3L, "Tablet", new BigDecimal("7777.77")),
+                new TopSellingItemDTO(4L, "Monitor", new BigDecimal("6666.66")),
+                new TopSellingItemDTO(5L, "Mouse", new BigDecimal("5555.55"))
+        );
     }
 }
