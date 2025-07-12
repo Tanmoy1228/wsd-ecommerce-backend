@@ -1,5 +1,6 @@
 package com.wsd.ecommerce_app.service;
 
+import com.wsd.ecommerce_app.dto.MaxSaleDayDTO;
 import com.wsd.ecommerce_app.dto.SaleTotalTodayDTO;
 import com.wsd.ecommerce_app.repository.SaleRepository;
 import com.wsd.ecommerce_app.service.impl.SaleServiceImpl;
@@ -42,5 +43,31 @@ class SaleServiceTest {
 
         assertThat(dto.getDate()).isEqualTo(today);
         assertThat(dto.getTotalSaleAmount()).isEqualTo(totalAmount);
+    }
+
+    @Test
+    void shouldReturnMaxSaleDayWithinRange() {
+
+        LocalDate startDate = LocalDate.of(2025, 6, 1);
+        LocalDate endDate = LocalDate.of(2025, 7, 3);
+
+        BigDecimal totalSaleAmount = new BigDecimal("300.00");
+        LocalDate maxSaleDate = LocalDate.of(2025, 6, 5);
+
+        MaxSaleDayDTO result = saleService.getMaxSaleDay(startDate, endDate);
+
+        assertThat(result.getDate()).isEqualTo(maxSaleDate);
+        assertThat(result.getTotalSaleAmount()).isEqualByComparingTo(totalSaleAmount);
+    }
+
+    @Test
+    void shouldReturnNullIfNoSalesInRange() {
+
+        LocalDate startDate = LocalDate.of(2024, 8, 1);
+        LocalDate endDate = LocalDate.of(2024, 8, 2);
+
+        MaxSaleDayDTO result = saleService.getMaxSaleDay(startDate, endDate);
+
+        assertThat(result).isNull();
     }
 }
