@@ -1,5 +1,6 @@
 package com.wsd.ecommerce_app.controller;
 
+import com.wsd.ecommerce_app.dto.MaxSaleDayDTO;
 import com.wsd.ecommerce_app.dto.SaleTotalTodayDTO;
 import com.wsd.ecommerce_app.service.SaleService;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -51,12 +53,16 @@ public class SaleControllerTest {
         BigDecimal totalSaleAmount = new BigDecimal("999.99");
         LocalDate date = LocalDate.of(2024, 7, 5);
 
+        MaxSaleDayDTO dto = new MaxSaleDayDTO(date, totalSaleAmount);
+
+        Mockito.when(saleService.getMaxSaleDay(eq(startDate), eq(endDate))).thenReturn(dto);
+
         mockMvc.perform(get("/api/sales/max-day")
                         .param("startDate", startDate.toString())
                         .param("endDate", endDate.toString())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.date").value(date.toString()))
-                .andExpect(jsonPath("$.totalSaleAmount").value(totalSaleAmount));
+                .andExpect(jsonPath("$.date").value(dto.getDate().toString()))
+                .andExpect(jsonPath("$.totalSaleAmount").value(dto.getTotalSaleAmount()));
     }
 }

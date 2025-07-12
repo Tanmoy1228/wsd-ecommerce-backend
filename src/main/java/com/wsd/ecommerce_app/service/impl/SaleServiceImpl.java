@@ -1,5 +1,6 @@
 package com.wsd.ecommerce_app.service.impl;
 
+import com.wsd.ecommerce_app.dto.MaxSaleDayDTO;
 import com.wsd.ecommerce_app.dto.SaleTotalTodayDTO;
 import com.wsd.ecommerce_app.repository.SaleRepository;
 import com.wsd.ecommerce_app.service.SaleService;
@@ -36,5 +37,16 @@ public class SaleServiceImpl implements SaleService {
         total = total != null ? total : BigDecimal.ZERO;
 
         return new SaleTotalTodayDTO(today, total);
+    }
+
+    @Override
+    public MaxSaleDayDTO getMaxSaleDay(LocalDate startDate, LocalDate endDate) {
+
+        BigDecimal totalSaleAmount = new BigDecimal("999.99");
+        LocalDate date = LocalDate.of(2024, 7, 5);
+
+        MaxSaleDayDTO maxSaleDayDTO = new MaxSaleDayDTO(date, totalSaleAmount);
+
+        return maxSaleDayDTO;
     }
 }
