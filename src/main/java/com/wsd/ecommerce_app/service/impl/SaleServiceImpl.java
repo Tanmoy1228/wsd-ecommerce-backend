@@ -2,6 +2,7 @@ package com.wsd.ecommerce_app.service.impl;
 
 import com.wsd.ecommerce_app.dto.MaxSaleDayDTO;
 import com.wsd.ecommerce_app.dto.SaleTotalTodayDTO;
+import com.wsd.ecommerce_app.repository.MaxSaleDayProjection;
 import com.wsd.ecommerce_app.repository.SaleRepository;
 import com.wsd.ecommerce_app.service.SaleService;
 import org.apache.logging.log4j.LogManager;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Service
 public class SaleServiceImpl implements SaleService {
@@ -40,17 +40,12 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public MaxSaleDayDTO getMaxSaleDay(LocalDate startDate, LocalDate endDate) {
 
-        BigDecimal totalSaleAmount = new BigDecimal("300.00");
-        LocalDate maxSaleDate = LocalDate.of(2025, 6, 5);
+        MaxSaleDayProjection maxSaleDayProjection = saleRepository.findMaxSaleDay(startDate, endDate);
 
-        LocalDate previousYearDate = LocalDate.of(2024, 12, 31);
-
-        if (endDate.isBefore(previousYearDate)) {
+        if (maxSaleDayProjection == null) {
             return null;
         }
 
-        MaxSaleDayDTO maxSaleDayDTO = new MaxSaleDayDTO(maxSaleDate, totalSaleAmount);
-
-        return maxSaleDayDTO;
+        return new MaxSaleDayDTO(maxSaleDayProjection.getDate(), maxSaleDayProjection.getTotalSaleAmount());
     }
 }

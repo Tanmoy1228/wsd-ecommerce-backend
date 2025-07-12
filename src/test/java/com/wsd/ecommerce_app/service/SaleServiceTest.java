@@ -2,6 +2,7 @@ package com.wsd.ecommerce_app.service;
 
 import com.wsd.ecommerce_app.dto.MaxSaleDayDTO;
 import com.wsd.ecommerce_app.dto.SaleTotalTodayDTO;
+import com.wsd.ecommerce_app.repository.MaxSaleDayProjection;
 import com.wsd.ecommerce_app.repository.SaleRepository;
 import com.wsd.ecommerce_app.service.impl.SaleServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -52,6 +52,20 @@ class SaleServiceTest {
         BigDecimal totalSaleAmount = new BigDecimal("300.00");
         LocalDate maxSaleDate = LocalDate.of(2025, 6, 5);
 
+        when(saleRepository.findMaxSaleDay(startDate, endDate)).thenReturn(
+                new MaxSaleDayProjection() {
+                    @Override
+                    public LocalDate getDate() {
+                        return maxSaleDate;
+                    }
+
+                    @Override
+                    public BigDecimal getTotalSaleAmount() {
+                        return totalSaleAmount;
+                    }
+                }
+        );
+
         MaxSaleDayDTO result = saleService.getMaxSaleDay(startDate, endDate);
 
         assertThat(result.getDate()).isEqualTo(maxSaleDate);
@@ -63,6 +77,9 @@ class SaleServiceTest {
 
         LocalDate startDate = LocalDate.of(2024, 8, 1);
         LocalDate endDate = LocalDate.of(2024, 8, 2);
+
+        when(saleRepository.findMaxSaleDay(startDate, endDate))
+                .thenReturn(null);
 
         MaxSaleDayDTO result = saleService.getMaxSaleDay(startDate, endDate);
 
