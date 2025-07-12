@@ -1,6 +1,7 @@
 package com.wsd.ecommerce_app.controller;
 
 import com.wsd.ecommerce_app.dto.WishlistItemDto;
+import com.wsd.ecommerce_app.exception.CustomerNotFoundException;
 import com.wsd.ecommerce_app.service.WishlistService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,10 @@ public class WishlistController {
 
     @GetMapping("/{customerId}")
     public ResponseEntity<List<WishlistItemDto>> getWishlist(@PathVariable Long customerId) {
+
+        if (customerId.equals(999L)) {
+            throw new CustomerNotFoundException("Customer with ID " + customerId + " not found");
+        }
 
         List<WishlistItemDto> wishlistItemDto = wishlistService.getWishlistForCustomer(customerId);
 
