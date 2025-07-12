@@ -2,9 +2,11 @@ package com.wsd.ecommerce_app.service;
 
 import com.wsd.ecommerce_app.dto.MaxSaleDayDTO;
 import com.wsd.ecommerce_app.dto.SaleTotalTodayDTO;
+import com.wsd.ecommerce_app.dto.TopItemLastMonthDTO;
 import com.wsd.ecommerce_app.dto.TopSellingItemDTO;
 import com.wsd.ecommerce_app.repository.MaxSaleDayProjection;
 import com.wsd.ecommerce_app.repository.SaleRepository;
+import com.wsd.ecommerce_app.repository.TopItemLastMonthProjection;
 import com.wsd.ecommerce_app.repository.TopSellingItemProjection;
 import com.wsd.ecommerce_app.service.impl.SaleServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -147,6 +149,81 @@ class SaleServiceTest {
 
             @Override
             public BigDecimal getTotalSaleAmount() { return totalSaleAmount; }
+        };
+    }
+
+    @Test
+    void shouldReturnTop5SellingItemsOfLastMonth() {
+
+        List<TopItemLastMonthProjection> projections = Arrays.asList(
+                createLastMonthTopItemProjection(1L, "Laptop", 10),
+                createLastMonthTopItemProjection(2L, "Phone", 20),
+                createLastMonthTopItemProjection(3L, "Tablet", 30),
+                createLastMonthTopItemProjection(4L, "Headphones", 40),
+                createLastMonthTopItemProjection(5L, "Mouse", 50)
+        );
+
+        LocalDate today = LocalDate.now();
+        LocalDate firstDayOfLastMonth = today.minusMonths(1).withDayOfMonth(1);
+        LocalDate lastDayOfLastMonth = firstDayOfLastMonth.withDayOfMonth(firstDayOfLastMonth.lengthOfMonth());
+
+        when(saleRepository.findTop5SellingItemsOfLastMonth(firstDayOfLastMonth, lastDayOfLastMonth))
+                .thenReturn(projections);
+
+        List<TopItemLastMonthDTO> result = saleService.getTop5ItemsOfLastMonth();
+
+        assertThat(result).hasSize(5);
+        assertThat(result.get(0).getProductId()).isEqualTo(1L);
+        assertThat(result.get(0).getProductName()).isEqualTo("Laptop");
+        assertThat(result.get(0).getNumberOfSales()).isEqualTo(10);
+    }
+
+    @Test
+    void shouldReturnLessThan5ItemsWhenNotEnoughProductsInLastMonth() {
+
+        List<TopItemLastMonthProjection> projections = Arrays.asList(
+                createLastMonthTopItemProjection(1L, "Laptop", 10),
+                createLastMonthTopItemProjection(2L, "Phone",  20)
+        );
+
+        LocalDate today = LocalDate.now();
+        LocalDate firstDayOfLastMonth = today.minusMonths(1).withDayOfMonth(1);
+        LocalDate lastDayOfLastMonth = firstDayOfLastMonth.withDayOfMonth(firstDayOfLastMonth.lengthOfMonth());
+
+        when(saleRepository.findTop5SellingItemsOfLastMonth(firstDayOfLastMonth, lastDayOfLastMonth))
+                .thenReturn(projections);
+
+        List<TopItemLastMonthDTO> result = saleService.getTop5ItemsOfLastMonth();
+
+        assertThat(result).hasSize(2);
+    }
+
+    @Test
+    void shouldReturnEmptyListWhenNoSalesInLastMonth() {
+
+        LocalDate today = LocalDate.now();
+        LocalDate firstDayOfLastMonth = today.minusMonths(1).withDayOfMonth(1);
+        LocalDate lastDayOfLastMonth = firstDayOfLastMonth.withDayOfMonth(firstDayOfLastMonth.lengthOfMonth());
+
+        when(saleRepository.findTop5SellingItemsOfLastMonth(firstDayOfLastMonth, lastDayOfLastMonth))
+                .thenReturn(Collections.emptyList());
+
+        List<TopItemLastMonthDTO> result = saleService.getTop5ItemsOfLastMonth();
+
+        assertThat(result).isEmpty();
+    }
+
+    private TopItemLastMonthProjection createLastMonthTopItemProjection(Long productId, String productName, Integer numberOfSales) {
+
+        return new TopItemLastMonthProjection() {
+            @Override
+            public Long getProductId() { return productId; }
+
+            @Override
+            public String getProductName() { return productName; }
+
+            @Override
+            public Integer getNumberOfSales() { return numberOfSales; }
         };
     }
 
