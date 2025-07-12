@@ -37,4 +37,17 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     LIMIT 5
     """)
     List<TopSellingItemProjection> findTop5SellingItems();
+
+    @Query("""
+    SELECT
+        s.product.id AS productId,
+        s.product.name AS productName,
+        SUM(s.quantity) AS numberOfSales
+    FROM Sale s
+    WHERE s.saleDate >= :startDate AND s.saleDate <= :endDate
+    GROUP BY s.product.id
+    ORDER BY SUM(s.quantity) DESC
+    LIMIT 5
+    """)
+    List<TopItemLastMonthProjection> findTop5SellingItemsOfLastMonth(LocalDate firstDayOfLastMonth, LocalDate lastDayOfLastMonth);
 }

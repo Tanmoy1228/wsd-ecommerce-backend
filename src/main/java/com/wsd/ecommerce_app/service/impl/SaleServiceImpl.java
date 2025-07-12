@@ -2,9 +2,11 @@ package com.wsd.ecommerce_app.service.impl;
 
 import com.wsd.ecommerce_app.dto.MaxSaleDayDTO;
 import com.wsd.ecommerce_app.dto.SaleTotalTodayDTO;
+import com.wsd.ecommerce_app.dto.TopItemLastMonthDTO;
 import com.wsd.ecommerce_app.dto.TopSellingItemDTO;
 import com.wsd.ecommerce_app.repository.MaxSaleDayProjection;
 import com.wsd.ecommerce_app.repository.SaleRepository;
+import com.wsd.ecommerce_app.repository.TopItemLastMonthProjection;
 import com.wsd.ecommerce_app.repository.TopSellingItemProjection;
 import com.wsd.ecommerce_app.service.SaleService;
 import org.apache.logging.log4j.LogManager;
@@ -65,5 +67,24 @@ public class SaleServiceImpl implements SaleService {
                                 projection.getTotalSaleAmount()
                         )
                 ).toList();
+    }
+
+    @Override
+    public List<TopItemLastMonthDTO> getTop5ItemsOfLastMonth() {
+
+        LocalDate today = LocalDate.now();
+        LocalDate firstDayOfLastMonth = today.minusMonths(1).withDayOfMonth(1);
+        LocalDate lastDayOfLastMonth = firstDayOfLastMonth.withDayOfMonth(firstDayOfLastMonth.lengthOfMonth());
+
+        List<TopItemLastMonthProjection> topItemLastMonthProjections = saleRepository.findTop5SellingItemsOfLastMonth(
+                firstDayOfLastMonth, lastDayOfLastMonth);
+
+        return topItemLastMonthProjections.stream().map(projection ->
+                new TopItemLastMonthDTO(
+                        projection.getProductId(),
+                        projection.getProductName(),
+                        projection.getNumberOfSales()
+                )
+        ).toList();
     }
 }
