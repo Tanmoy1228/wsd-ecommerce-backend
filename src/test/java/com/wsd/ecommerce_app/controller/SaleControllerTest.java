@@ -97,4 +97,13 @@ public class SaleControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void shouldReturnTop5SellingItemsOfAllTime() throws Exception {
+
+        mockMvc.perform(get("/api/sales/top-five-selling-items")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray());
+    }
+
 }
