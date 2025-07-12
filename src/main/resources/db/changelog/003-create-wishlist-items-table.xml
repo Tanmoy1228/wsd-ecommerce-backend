@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet id="003-create-wishlist-items-table" author="tanmoy">
+        <createTable tableName="wishlists">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="customer_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="added_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Add foreign key constraints -->
+        <addForeignKeyConstraint
+                baseTableName="wishlists"
+                baseColumnNames="customer_id"
+                referencedTableName="customers"
+                referencedColumnNames="id"
+                constraintName="fk_wishlist_customer"/>
+
+        <addForeignKeyConstraint
+                baseTableName="wishlists"
+                baseColumnNames="product_id"
+                referencedTableName="products"
+                referencedColumnNames="id"
+                constraintName="fk_wishlist_product"/>
+
+        <!-- Add unique constraint to prevent duplicate wishlist -->
+        <addUniqueConstraint
+                tableName="wishlists"
+                columnNames="customer_id,product_id"
+                constraintName="uk_wishlist_customer_product"/>
+
+        <!-- Index customer_id to optimize performance -->
+        <createIndex tableName="wishlists" indexName="idx_wishlists_customer_id">
+            <column name="customer_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
