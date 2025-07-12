@@ -1,6 +1,7 @@
 package com.wsd.ecommerce_app.controller;
 
 import com.wsd.ecommerce_app.dto.WishlistItemDto;
+import com.wsd.ecommerce_app.service.WishlistService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,12 +14,16 @@ import java.util.List;
 @RequestMapping("/api/wishlist")
 public class WishlistController {
 
+    private final WishlistService wishlistService;
+
+    public WishlistController(WishlistService wishlistService) {
+        this.wishlistService = wishlistService;
+    }
+
     @GetMapping("/{customerId}")
     public ResponseEntity<List<WishlistItemDto>> getWishlist(@PathVariable Long customerId) {
 
-        List<WishlistItemDto> wishlistItemDto = List.of(
-                new WishlistItemDto(100L, "Sample wishlist item", java.time.LocalDateTime.now())
-        );
+        List<WishlistItemDto> wishlistItemDto = wishlistService.getWishlistForCustomer(customerId);
 
         return ResponseEntity.ok(wishlistItemDto);
     }
