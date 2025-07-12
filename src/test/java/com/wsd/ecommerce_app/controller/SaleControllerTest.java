@@ -118,4 +118,13 @@ public class SaleControllerTest {
                 .andExpect(jsonPath("$").isArray());
     }
 
+    @Test
+    void shouldReturnTop5ItemsOfLastMonthByNumberOfSales() throws Exception {
+
+        mockMvc.perform(get("/api/sales/last-month-top-selling-items")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray());
+    }
+
 }
