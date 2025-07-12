@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet id="005-add-sales-indexes-for-product-and-amount" author="tanmoy">
+        <!-- Index for product_id to optimize GROUP BY queries -->
+        <createIndex tableName="sales" indexName="idx_sales_product_id">
+            <column name="product_id"/>
+        </createIndex>
+
+        <!-- Index for amount to optimize ORDER BY queries -->
+        <createIndex tableName="sales" indexName="idx_sales_amount">
+            <column name="amount"/>
+        </createIndex>
+
+        <!-- Composite index for product_id and amount for top selling queries -->
+        <createIndex tableName="sales" indexName="idx_sales_product_amount">
+            <column name="product_id"/>
+            <column name="amount"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
