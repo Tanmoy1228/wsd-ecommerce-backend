@@ -35,6 +35,10 @@ public class SaleController {
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
 
+        if (endDate.isBefore(startDate)) {
+            return ResponseEntity.badRequest().build();
+        }
+
         MaxSaleDayDTO maxSaleDayDTO = saleService.getMaxSaleDay(startDate, endDate);
 
         return ResponseEntity.ok(maxSaleDayDTO);
