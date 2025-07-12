@@ -26,5 +26,15 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
    """)
     MaxSaleDayProjection findMaxSaleDay(LocalDate startDate, LocalDate endDate);
 
+    @Query("""
+    SELECT
+        s.product.id AS productId,
+        s.product.name AS productName,
+        SUM(s.amount) AS totalSaleAmount
+    FROM Sale s
+    GROUP BY s.product.id
+    ORDER BY SUM(s.amount) DESC
+    LIMIT 5
+    """)
     List<TopSellingItemProjection> findTop5SellingItems();
 }
