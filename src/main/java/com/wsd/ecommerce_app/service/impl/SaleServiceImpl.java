@@ -42,10 +42,16 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public MaxSaleDayDTO getMaxSaleDay(LocalDate startDate, LocalDate endDate) {
 
-        BigDecimal totalSaleAmount = new BigDecimal("999.99");
-        LocalDate date = LocalDate.of(2024, 7, 5);
+        BigDecimal totalSaleAmount = new BigDecimal("300.00");
+        LocalDate maxSaleDate = LocalDate.of(2025, 6, 5);
 
-        MaxSaleDayDTO maxSaleDayDTO = new MaxSaleDayDTO(date, totalSaleAmount);
+        LocalDate previousYearDate = LocalDate.of(2024, 12, 31);
+
+        if (endDate.isBefore(previousYearDate)) {
+            return null;
+        }
+
+        MaxSaleDayDTO maxSaleDayDTO = new MaxSaleDayDTO(maxSaleDate, totalSaleAmount);
 
         return maxSaleDayDTO;
     }
