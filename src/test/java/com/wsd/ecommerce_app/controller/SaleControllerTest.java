@@ -15,6 +15,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.eq;
@@ -136,6 +138,34 @@ public class SaleControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
+    }
+
+    @Test
+    void shouldReturnLessThan5ItemsWhenNotEnoughProductsInLastMonth() throws Exception {
+
+        List<TopItemLastMonthDTO> topItemLastMonthDTOList = Arrays.asList(
+                new TopItemLastMonthDTO(1L, "Laptop", 10),
+                new TopItemLastMonthDTO(2L, "Phone", 15),
+                new TopItemLastMonthDTO(3L, "Tablet", 20)
+        );
+
+        Mockito.when(saleService.getTop5ItemsOfLastMonth()).thenReturn(topItemLastMonthDTOList);
+
+        mockMvc.perform(get("/api/sales/last-month-top-selling-items")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(3));
+    }
+
+    @Test
+    void shouldReturnEmptyListWhenNoSalesInLastMonth() throws Exception {
+
+        Mockito.when(saleService.getTop5ItemsOfLastMonth()).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/api/sales/last-month-top-selling-items")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0));
     }
 
 }
