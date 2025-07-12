@@ -1,8 +1,12 @@
 package com.wsd.ecommerce_app.controller;
 
+import com.wsd.ecommerce_app.dto.SaleTotalTodayDTO;
+import com.wsd.ecommerce_app.service.SaleService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -18,11 +22,18 @@ public class SaleControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @MockBean
+    private SaleService saleService;
+
     @Test
     void shouldReturnTodayTotalSales() throws Exception {
 
         LocalDate today = LocalDate.now();
         BigDecimal totalSaleAmount = new BigDecimal("1500.75");
+
+        SaleTotalTodayDTO saleTotalTodayDTO = new SaleTotalTodayDTO(today, totalSaleAmount);
+
+        Mockito.when(saleService.getTodaySaleTotal()).thenReturn(saleTotalTodayDTO);
 
         mockMvc.perform(get("/api/sales/today")
                         .accept(MediaType.APPLICATION_JSON))
