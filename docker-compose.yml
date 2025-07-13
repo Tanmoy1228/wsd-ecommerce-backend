@@ -29,7 +29,44 @@ services:
     volumes:
       - wsd-ecommerce-postgres-db-data:/var/lib/postgresql/data
 
+  elasticsearch:
+    image: elasticsearch:8.13.0
+    container_name: wsd-ecommerce-backend-log-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - bootstrap.memory_lock=true
+    volumes:
+      - wsd-ecommerce-backend-log-es-data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+
+  logstash:
+    image: logstash:8.13.0
+    container_name: wsd-ecommerce-backend-log-logstash
+    ports:
+      - "5044:5044"   # For Beats input
+      - "5000:5000"   # For TCP/UDP input
+    depends_on:
+      - elasticsearch
+    volumes:
+      - ./logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./logs:/logs
+
+  kibana:
+    image: kibana:8.13.0
+    container_name: wsd-ecommerce-backend-log-kibana
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+
 
 volumes:
   wsd-ecommerce-postgres-db-data:
     name: wsd-ecommerce-postgres-db-data
+  wsd-ecommerce-backend-log-es-data:
+    name: wsd-ecommerce-backend-log-es-data
